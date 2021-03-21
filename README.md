@@ -1,5 +1,5 @@
 # EnhancedGamepadUI
-The Elder Scrolls Online addon which improves keyboard & mouse capability with the gamepad interface
+The Elder Scrolls Online addon which improves keyboard & mouse compatibility with the gamepad interface
 
 # Features
 - Lockpicking minigame mouse support
