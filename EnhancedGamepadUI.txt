@@ -1,0 +1,10 @@
+## Title: EnhancedGamepadUI
+## Description: Improved keyboard & mouse capability with the gamepad interface
+## Author: AdeonMaster
+## Version: 1.0
+## APIVersion: 100034
+
+EnhancedGamepadUI.lua
+
+esoui/ingame/lockpick/lockpick.lua
+esoui/libraries/zo_radialmenu/zo_radialmenu.lua
