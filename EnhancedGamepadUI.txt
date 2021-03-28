@@ -1,9 +1,10 @@
 ## Title: EnhancedGamepadUI
 ## Description: Improved keyboard & mouse compatibility with the gamepad interface
 ## Author: AdeonMaster
-## Version: 1.1
+## Version: 1.2
 ## APIVersion: 100034
 ## DependsOn: LibAddonMenu-2.0
 ## SavedVariables: EnhancedGamepadUI_SavedVariables
 
 EnhancedGamepadUI.lua
+Bindings.xml

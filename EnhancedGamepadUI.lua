@@ -2,11 +2,95 @@ EnhancedGamepadUI = {}
 
 EnhancedGamepadUI.name = "EnhancedGamepadUI"
 EnhancedGamepadUI.defaultSavedVariables = {
-  usePCLabels = false
+  usePCLabels = true
 }
 
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_RIGHT_TRIGGER", "Gamepad Right Trigger")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_LEFT_TRIGGER", "Gamepad Left Trigger")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_RIGHT_SHOULDER", "Gamepad Right Shoulder")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_LEFT_SHOULDER", "Gamepad Left Shoulder")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_INPUT_LEFT", "Gamepad Left Input")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_INPUT_RIGHT", "Gamepad Right Input")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_INPUT_UP", "Gamepad Up Input")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_INPUT_DOWN", "Gamepad Down Input")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_LEFT_STICK", "Gamepad Left Stick")
+ZO_CreateStringId("SI_BINDING_NAME_CUSTOM_UI_SHORTCUT_RIGHT_STICK", "Gamepad Right Stick")
+
 local MOUSE_SPEED_FACTOR = 12
+local RESTRICTED_GAMEPAD_ACTION_NAMES = {
+  "UI_SHORTCUT_RIGHT_TRIGGER",
+  "UI_SHORTCUT_LEFT_TRIGGER",
+  "UI_SHORTCUT_RIGHT_SHOULDER",
+  "UI_SHORTCUT_LEFT_SHOULDER",
+  "UI_SHORTCUT_INPUT_LEFT",
+  "UI_SHORTCUT_INPUT_RIGHT",
+  "UI_SHORTCUT_INPUT_UP",
+  "UI_SHORTCUT_INPUT_DOWN",
+  "UI_SHORTCUT_LEFT_STICK",
+  "UI_SHORTCUT_RIGHT_STICK",
+}
+local DEFAULT_KEYBINDINGS = {
+  { "CUSTOM_UI_SHORTCUT_RIGHT_TRIGGER",   KEY_MOUSE_RIGHT },
+  { "CUSTOM_UI_SHORTCUT_LEFT_TRIGGER",    KEY_MOUSE_LEFT },
+  { "CUSTOM_UI_SHORTCUT_RIGHT_SHOULDER",  KEY_OEM_6_RIGHT_SQUARE_BRACKET },
+  { "CUSTOM_UI_SHORTCUT_LEFT_SHOULDER",   KEY_OEM_4_LEFT_SQUARE_BRACKET },
+  { "CUSTOM_UI_SHORTCUT_INPUT_LEFT",      KEY_LEFTARROW },
+  { "CUSTOM_UI_SHORTCUT_INPUT_RIGHT",     KEY_RIGHTARROW },
+  { "CUSTOM_UI_SHORTCUT_INPUT_UP",        KEY_UPARROW },
+  { "CUSTOM_UI_SHORTCUT_INPUT_DOWN",      KEY_DOWNARROW },
+  { "CUSTOM_UI_SHORTCUT_LEFT_STICK",      KEY_A },
+  { "CUSTOM_UI_SHORTCUT_RIGHT_STICK",     KEY_D },
+}
+
 local isDrag = false
+
+local function LoadDefaultKeyBindings()
+  for _, keybinding in pairs(DEFAULT_KEYBINDINGS) do
+    local layerIndex, categoryIndex, actionIndex = GetActionIndicesFromName(keybinding[1])
+
+    CallSecureProtected("BindKeyToAction", layerIndex, categoryIndex, actionIndex, 1, keybinding[2], 0, 0, 0, 0)
+  end
+end
+
+local function ReplaceKeybindButtonDescriptor(keybindButtonDescriptor)
+  for _, actionName in pairs(RESTRICTED_GAMEPAD_ACTION_NAMES) do
+    if keybindButtonDescriptor and keybindButtonDescriptor.keybind == actionName then
+      keybindButtonDescriptor.keybind = "CUSTOM_"..actionName
+      break
+    end
+  end
+
+  return keybindButtonDescriptor
+end
+
+local function IsEmptyKeybindings()
+  local maxBindingsPerAction = GetMaxBindingsPerAction()
+
+  for _, actionName in pairs(RESTRICTED_GAMEPAD_ACTION_NAMES) do
+    local layerIndex, categoryIndex, actionIndex = GetActionIndicesFromName("CUSTOM_"..actionName)
+    for bindingIndex = 1, maxBindingsPerAction do
+      local key = GetActionBindingInfo(layerIndex, categoryIndex, actionIndex, bindingIndex)
+
+      if key ~= KEY_INVALID then
+        return false
+      end
+    end
+  end
+
+  return true
+end
+
+local function UpdateActionbar()
+  if IsInGamepadPreferredMode() and EnhancedGamepadUI.savedVariables and EnhancedGamepadUI.savedVariables.usePCLabels then
+    local control1 = GetControl("ActionButton8RBkey")
+    local control2 = GetControl("ActionButton8LBkey")
+    local control3 = GetControl("ActionButton8ButtonText")
+
+    control1:SetAlpha(0)
+    control2:SetAlpha(0)
+    control3:SetHidden(false)
+  end
+end
 
 function EnhancedGamepadUI:InitializeSettingsPanel()
   local LAM = LibAddonMenu2
@@ -16,7 +100,7 @@ function EnhancedGamepadUI:InitializeSettingsPanel()
     name = "EnhancedGamepadUI",
     displayName = "Enhanced Gamepad UI",
     author = "AdeonMaster",
-    version = "1.1",
+    version = "1.2",
     website = "https://www.esoui.com/downloads/info2975-EnhancedGamepadUI.html",
     registerForRefresh = true,
     registerForDefaults = true
@@ -67,12 +151,8 @@ function EnhancedGamepadUI:ExtendControlsHandlers()
 end
 
 function EnhancedGamepadUI:Initialize()
-  -- Load saved variables
   EnhancedGamepadUI.savedVariables = ZO_SavedVars:NewAccountWide("EnhancedGamepadUI_SavedVariables", 1, nil, EnhancedGamepadUI.defaultSavedVariables)
-
-  -- Init LibAddonMenu2 settings panel
   EnhancedGamepadUI:InitializeSettingsPanel()
-
   EnhancedGamepadUI:ExtendControlsHandlers()
 end
 
@@ -82,7 +162,32 @@ function EnhancedGamepadUI.OnAddOnLoaded(event, addonName)
   end
 end
 
+function EnhancedGamepadUI.OnKeybindingsLoaded()
+  local isEmptyKeybindings = IsEmptyKeybindings()
+
+  if isEmptyKeybindings and not SCENE_MANAGER:IsShowing("gameMenuInGame") then
+    LoadDefaultKeyBindings()
+    return
+  end
+
+  if SCENE_MANAGER:IsShowing("gameMenuInGame") then
+    LoadDefaultKeyBindings()
+    return
+  end
+end
+
+function EnhancedGamepadUI.OnPlayerActivated()
+  UpdateActionbar()
+end
+
+function EnhancedGamepadUI.OnGamepadPreferredModeChanged(eventCode, gamepadPreferred)
+  UpdateActionbar()
+end
+
 EVENT_MANAGER:RegisterForEvent(EnhancedGamepadUI.name, EVENT_ADD_ON_LOADED, EnhancedGamepadUI.OnAddOnLoaded)
+EVENT_MANAGER:RegisterForEvent(EnhancedGamepadUI.name, EVENT_KEYBINDINGS_LOADED, EnhancedGamepadUI.OnKeybindingsLoaded)
+EVENT_MANAGER:RegisterForEvent(EnhancedGamepadUI.name, EVENT_PLAYER_ACTIVATED, EnhancedGamepadUI.OnPlayerActivated)
+EVENT_MANAGER:RegisterForEvent(EnhancedGamepadUI.name, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, EnhancedGamepadUI.OnGamepadPreferredModeChanged)
 
 -- esoui/libraries/zo_directionalinput/zo_directionalinput.lua
 local _GetGamepadLeftStickX = GetGamepadLeftStickX
@@ -214,4 +319,14 @@ function ZO_RadialMenu:UpdateVirtualMousePositionFromGamepad()
   end
 
   return false
-end  
+end
+
+-- libraries/zo_keybindstrip/zo_keybindstrip.lua
+local _AddKeybindButton = KEYBIND_STRIP.AddKeybindButton
+function KEYBIND_STRIP:AddKeybindButton(keybindButtonDescriptor, index)
+  if IsInGamepadPreferredMode() and EnhancedGamepadUI.savedVariables and EnhancedGamepadUI.savedVariables.usePCLabels then
+    return _AddKeybindButton(self, ReplaceKeybindButtonDescriptor(keybindButtonDescriptor), index)
+  end
+
+  return _AddKeybindButton(self, keybindButtonDescriptor, index)
+end

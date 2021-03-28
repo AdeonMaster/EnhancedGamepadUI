@@ -1,0 +1,55 @@
+<Bindings>
+	<Layer name="SI_KEYBINDINGS_LAYER_USER_INTERFACE_SHORTCUTS">
+		<Category name="Enhanced Gamepad UI">
+			<Action name="CUSTOM_UI_SHORTCUT_RIGHT_TRIGGER">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_LEFT_TRIGGER">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_RIGHT_SHOULDER">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_LEFT_SHOULDER">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_INPUT_LEFT">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_INPUT_RIGHT">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_INPUT_UP">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_INPUT_DOWN">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_LEFT_STICK">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+
+      <Action name="CUSTOM_UI_SHORTCUT_RIGHT_STICK">
+        <Down>return ZO_KeybindStrip_HandleKeybindDown(keybind)</Down>
+        <Up>return ZO_KeybindStrip_HandleKeybindUp(keybind)</Up>
+      </Action>
+		</Category>
+	</Layer>
+</Bindings>

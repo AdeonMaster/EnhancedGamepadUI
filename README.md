@@ -14,12 +14,19 @@ The Elder Scrolls Online addon which improves keyboard & mouse compatibility wit
 
 # Changelog
 
+## 1.2
+- Added normal ultimate ability label instead of gamepad button textures
+- Enriched `User Interface Shortcuts` with custom key bindings (This will allow to use keyboard bindings for unbindable gamepad keys)
+- `Use PC key labels for Gamepad UI` is now set to TRUE by default
+
 ## 1.1
 - Added support for PC key labels while in Gamepad UI. You can now turn this option under `EnhancedGamepadUI` addon settings (This action will require to reload UI)
 
 # Know issues
-- There are several gamepad actions/buttons which can't be rebinded (UI_SHORTCUT_LEFT_TRIGGER, UI_SHORTCUT_RIGHT_TRIGGER & etc.) Because of it some of PC key labels while in Gamepad UI could have "Not Bound" caption
-- Action bar labels doesn't support key string formatting (No background and border around the label text)
+- Not all the windows/scenes are supporting PC key labels while in Gamepad UI
+
+# ESOUI Addon link
+https://www.esoui.com/downloads/info2975-EnhancedGamepadUI.html
 
 # Contributors
 You are free to request pulls into this Git repo. Let's improve it together!
